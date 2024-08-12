@@ -1,36 +1,76 @@
+/* eslint-disable padding-line-between-statements */
 "use client";
+
 import {
   Card,
   CardHeader,
   CardBody,
   CardFooter,
   Divider,
-  Link,
   Image,
-  Avatar,
-  AvatarIcon,
   Input,
   Button,
+  ScrollShadow,
 } from "@nextui-org/react";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
-
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
 import { IconSend2 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { getAllMessages, sendMessage } from "@/utils/supabase/action";
 import { Message } from "@/components/message";
+import { supabase } from "@/utils/supabase/server";
 
 export default function Home() {
   const [msgs, setMsgs] = useState<any>([]);
+  const [refreshMessages, setRefreshMessages] = useState<any>();
   const [msg, setMsg] = useState<any>("");
   const [inputError, setInputError] = useState<any>({
     invalid: false,
     msg: "",
   });
+
+  function fetchAllMessages() {
+    const messagesUpdated = async (payload: any) => {
+      const newMsg = payload.new;
+      const oldTask = payload.old;
+      const event = payload.eventType;
+      if (event === "INSERT") {
+        setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
+      } else if (event === "UPDATE") {
+        setMsgs((prevMsg: any[]) => {
+          prevMsg.map((msg) => (msg.id === oldTask.id ? newMsg : msg));
+        });
+      } else if (event === "DELETE") {
+        setMsgs((prevMsg: any[]) =>
+          prevMsg.filter((msg) => msg.id !== oldTask.id)
+        );
+      }
+
+      setTimeout(() => {
+        const element = document.getElementById("chat-bottom");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth",block: "nearest" });
+        }
+      }, 10);
+    };
+    supabase
+      .channel("messages")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "messages" },
+        messagesUpdated
+      )
+      .subscribe();
+  }
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      const element = document.getElementById("chat-bottom");
+      if (element) {
+        element.scrollIntoView({ behavior: "auto",block: "nearest" });
+      }
+    }, 1000);
+  }, []);
 
   useEffect(() => {
     async function fetchMsgs() {
@@ -38,7 +78,8 @@ export default function Home() {
       setMsgs(msgs);
     }
     fetchMsgs();
-  }, [setMsgs]);
+    fetchAllMessages();
+  }, [refreshMessages]);
 
   function sendMsg(msg: string) {
     if (msg == "" || msg == null) {
@@ -48,10 +89,10 @@ export default function Home() {
       });
     }
     sendMessage(msg);
-    setMsgs([...msgs, { content: msg }]);
+    // setMsgs([...msgs, { content: msg }]);
     setMsg("");
   }
-  
+
   return (
     <section className="flex justify-center">
       <Card className="w-[50%]">
@@ -66,18 +107,26 @@ export default function Home() {
           <div className="flex flex-col">
             <p className="text-md">Global Chat</p>
             <p className="text-small text-default-500">
-              Buradaki sohbet'e herkes katılabilir.
+              Buradaki sohbet&apos;e herkes katılabilir.
             </p>
           </div>
         </CardHeader>
         <Divider />
         <CardBody>
           <div className="grid grid-cols-1">
-            <div>
-              {msgs.map((e: any, i: number) => {
-                return <Message key={i} data={e} />;
-              })}
-            </div>
+            <ScrollShadow
+              hideScrollBar
+              offset={100}
+              size={100}
+              className="w-100 h-[400px]"
+            >
+              <div ref={containerRef}>
+                {msgs.map((e: any, i: number) => {
+                  return <Message key={i} data={e} />;
+                })}
+                <div id="chat-bottom"></div>
+              </div>
+            </ScrollShadow>
           </div>
         </CardBody>
         <Divider />

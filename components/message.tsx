@@ -4,7 +4,7 @@ import { Avatar, AvatarIcon, Code } from "@nextui-org/react";
 
 export const Message = (msg: any) => {
   return (
-    <div className="flex items-center">
+    <div className="flex my-3 items-center">
       <Avatar
         icon={<AvatarIcon />}
         size="sm"
@@ -13,14 +13,16 @@ export const Message = (msg: any) => {
           icon: "text-black/80",
         }}
       />
-      <div className="relative ml-2 max-w-80 rounded-lg text-white">
-        <Code
-          size="sm"
-          className="max-w-[100%]"
-          style={{ whiteSpace: "normal" }}
-        >
-         {msg.data.content}
-        </Code>
+      <div className="block ml-2 max-w-80 rounded-lg text-white">
+        <div className="my-1">
+          <Code
+            size="sm"
+            className="max-w-[100%]"
+            style={{ whiteSpace: "normal" }}
+          >
+            {msg.data.content}
+          </Code>
+        </div>
       </div>
     </div>
   );
