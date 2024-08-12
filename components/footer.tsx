@@ -17,7 +17,7 @@ export const Footer = () => {
           <h4 className="text-md font-light mb-5">powered by</h4>
         </div>
         <div>
-          <div className="grid grid-cols-5 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
             <Card isFooterBlurred radius="lg" className="border-none">
               <Image
                 alt="Supabase Database"

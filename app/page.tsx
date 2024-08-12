@@ -107,7 +107,7 @@ export default function Home() {
 
   return (
     <section className="flex justify-center">
-      <Card className="w-[50%]">
+      <Card className="lg:w-[50%]">
         <CardHeader className="flex gap-3">
           <Image
             alt="nextui logo"
