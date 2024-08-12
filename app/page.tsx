@@ -28,20 +28,32 @@ export default function Home() {
     msg: "",
   });
 
+
+  const [ip, setIp] = useState('');
+
+  useEffect(() => {
+    fetch('/api/get-ip')
+      .then((res) => res.json())
+      .then((data) => setIp(data.ip))
+      .catch((err) => console.error(err));
+  }, []);
+
+
+
   function fetchAllMessages() {
     const messagesUpdated = async (payload: any) => {
       const newMsg = payload.new;
-      const oldTask = payload.old;
+      const oldMsg = payload.old;
       const event = payload.eventType;
       if (event === "INSERT") {
         setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
       } else if (event === "UPDATE") {
-        setMsgs((prevMsg: any[]) => {
-          prevMsg.map((msg) => (msg.id === oldTask.id ? newMsg : msg));
+        setMsgs((prevMsg: any) => {
+          return prevMsg.map((msg: any) => (msg.id === oldMsg.id ? newMsg : msg));
         });
       } else if (event === "DELETE") {
         setMsgs((prevMsg: any[]) =>
-          prevMsg.filter((msg) => msg.id !== oldTask.id)
+          prevMsg.filter((msg) => msg.id !== oldMsg.id)
         );
       }
 
@@ -88,7 +100,7 @@ export default function Home() {
         msg: "Mesaj içeriği boş girilemez.",
       });
     }
-    sendMessage(msg);
+    sendMessage(msg,ip);
     // setMsgs([...msgs, { content: msg }]);
     setMsg("");
   }
@@ -117,15 +129,13 @@ export default function Home() {
             <ScrollShadow
               hideScrollBar
               offset={100}
-              size={100}
+              size={150}
               className="w-100 h-[400px]"
             >
-              <div ref={containerRef}>
-                {msgs.map((e: any, i: number) => {
-                  return <Message key={i} data={e} />;
+                {msgs?.map((e: any, i: number) => {
+                  return <Message ip={ip} key={i} data={e} />;
                 })}
                 <div id="chat-bottom"></div>
-              </div>
             </ScrollShadow>
           </div>
         </CardBody>

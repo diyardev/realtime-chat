@@ -5,8 +5,6 @@ import { redirect } from "next/navigation";
 import { supabase } from "./server";
 
 export async function login(formData: FormData) {
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const data = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -41,8 +39,10 @@ export async function signup(formData: FormData) {
 }
 
 export async function getAllMessages() {
-  const { data, error } = await supabase.from("messages").select();
-
+  const { data, error } = await supabase
+    .from("messages")
+    .select()
+    .order("id", { ascending: true });
   if (error) {
     return error;
   }
@@ -50,10 +50,10 @@ export async function getAllMessages() {
   return data;
 }
 
-export async function sendMessage(message: string) {
+export async function sendMessage(message: string, ip?: string) {
   const _data = {
     content: message,
-    ip: "dadsd" as string,
+    ip: ip,
   };
 
   const { error } = await supabase.from("messages").insert(_data);
