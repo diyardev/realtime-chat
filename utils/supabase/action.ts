@@ -42,7 +42,7 @@ export async function getAllMessages() {
   const { data, error } = await supabase
     .from("messages")
     .select()
-    .order("id", { ascending: true });
+    .order("id", { ascending: true }).limit(100);
   if (error) {
     return error;
   }

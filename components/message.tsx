@@ -14,6 +14,8 @@ export const Message = (msg: any) => {
     minute: "2-digit",
   });
 
+  
+
   function UserMsgComp() {
     return (
       <div className="flex my-3 items-center">

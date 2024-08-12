@@ -11,6 +11,7 @@ import {
   Input,
   Button,
   ScrollShadow,
+  Skeleton,
 } from "@nextui-org/react";
 import { IconSend2 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
@@ -18,27 +19,26 @@ import { useEffect, useRef, useState } from "react";
 import { getAllMessages, sendMessage } from "@/utils/supabase/action";
 import { Message } from "@/components/message";
 import { supabase } from "@/utils/supabase/server";
+import LoadingSkeleton from "@/components/loadingSkeleton";
 
 export default function Home() {
   const [msgs, setMsgs] = useState<any>([]);
   const [refreshMessages, setRefreshMessages] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(true);
   const [msg, setMsg] = useState<any>("");
   const [inputError, setInputError] = useState<any>({
     invalid: false,
     msg: "",
   });
 
-
-  const [ip, setIp] = useState('');
+  const [ip, setIp] = useState("");
 
   useEffect(() => {
-    fetch('/api/get-ip')
+    fetch("/api/get-ip")
       .then((res) => res.json())
       .then((data) => setIp(data.ip))
       .catch((err) => console.error(err));
   }, []);
-
-
 
   function fetchAllMessages() {
     const messagesUpdated = async (payload: any) => {
@@ -49,7 +49,9 @@ export default function Home() {
         setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
       } else if (event === "UPDATE") {
         setMsgs((prevMsg: any) => {
-          return prevMsg.map((msg: any) => (msg.id === oldMsg.id ? newMsg : msg));
+          return prevMsg.map((msg: any) =>
+            msg.id === oldMsg.id ? newMsg : msg
+          );
         });
       } else if (event === "DELETE") {
         setMsgs((prevMsg: any[]) =>
@@ -60,7 +62,7 @@ export default function Home() {
       setTimeout(() => {
         const element = document.getElementById("chat-bottom");
         if (element) {
-          element.scrollIntoView({ behavior: "smooth",block: "nearest" });
+          element.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
       }, 10);
     };
@@ -79,9 +81,9 @@ export default function Home() {
     setTimeout(() => {
       const element = document.getElementById("chat-bottom");
       if (element) {
-        element.scrollIntoView({ behavior: "auto",block: "nearest" });
+        element.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-    }, 1000);
+    }, 800);
   }, []);
 
   useEffect(() => {
@@ -91,6 +93,7 @@ export default function Home() {
     }
     fetchMsgs();
     fetchAllMessages();
+    setTimeout(() => setLoading(false), 400);
   }, [refreshMessages]);
 
   function sendMsg(msg: string) {
@@ -100,7 +103,7 @@ export default function Home() {
         msg: "Mesaj içeriği boş girilemez.",
       });
     }
-    sendMessage(msg,ip);
+    sendMessage(msg, ip);
     // setMsgs([...msgs, { content: msg }]);
     setMsg("");
   }
@@ -132,10 +135,15 @@ export default function Home() {
               size={150}
               className="w-100 h-[400px]"
             >
-                {msgs?.map((e: any, i: number) => {
+              {loading ? (
+                <LoadingSkeleton />
+              ) : (
+                msgs?.map((e: any, i: number) => {
                   return <Message ip={ip} key={i} data={e} />;
-                })}
-                <div id="chat-bottom"></div>
+                })
+              )}
+
+              <div id="chat-bottom"></div>
             </ScrollShadow>
           </div>
         </CardBody>
