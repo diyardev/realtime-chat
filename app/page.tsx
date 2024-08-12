@@ -19,7 +19,6 @@ import { getAllMessages, sendMessage } from "@/utils/supabase/action";
 import { Message } from "@/components/message";
 import { supabase } from "@/utils/supabase/server";
 
-
 export default function Home() {
   const [msgs, setMsgs] = useState<any>([]);
   const [refreshMessages, setRefreshMessages] = useState<any>();
@@ -46,10 +45,12 @@ export default function Home() {
         );
       }
 
-      const element = document.getElementById("chat-bottom");
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+      setTimeout(() => {
+        const element = document.getElementById("chat-bottom");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth",block: "nearest" });
+        }
+      }, 10);
     };
     supabase
       .channel("messages")
@@ -62,13 +63,11 @@ export default function Home() {
   }
   const containerRef = useRef(null);
 
-
-  
   useEffect(() => {
     setTimeout(() => {
       const element = document.getElementById("chat-bottom");
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+        element.scrollIntoView({ behavior: "auto",block: "nearest" });
       }
     }, 1000);
   }, []);
@@ -115,7 +114,12 @@ export default function Home() {
         <Divider />
         <CardBody>
           <div className="grid grid-cols-1">
-            <ScrollShadow offset={100} size={100} className="w-100 h-[400px]">
+            <ScrollShadow
+              hideScrollBar
+              offset={100}
+              size={100}
+              className="w-100 h-[400px]"
+            >
               <div ref={containerRef}>
                 {msgs.map((e: any, i: number) => {
                   return <Message key={i} data={e} />;
