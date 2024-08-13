@@ -36,7 +36,7 @@ export const Message = (msg: any) => {
         {sameUser && (
           <p className="font-light text-sm">{msg.data.ip_names?.name}</p>
           )}
-          <div className="my-1">
+          <div className="">
             <Code
               size="sm"
               className="max-w-[100%]"
@@ -72,7 +72,7 @@ export const Message = (msg: any) => {
             </p>
           )}
 
-          <div className="my-1">
+          <div className="my-3">
             <Code
               size="sm"
               className="max-w-[100%]"
