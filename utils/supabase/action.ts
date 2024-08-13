@@ -56,8 +56,6 @@ export async function getAllMessages() {
 }
 
 export async function sendMessage(message: string, ip?: string, name?: string) {
-
-
   const _data = {
     content: message,
     ip: ip,
@@ -70,3 +68,12 @@ export async function sendMessage(message: string, ip?: string, name?: string) {
   if (error) return error;
   return _data;
 }
+
+export async function getIpNameRequest(ip: any) {
+  const { data, error } = await supabase.from("ip_names").select().eq("ip", ip);
+  if (error) {
+    return error;
+  }
+  return data[0];
+}
+

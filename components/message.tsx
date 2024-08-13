@@ -7,7 +7,7 @@ export const Message = (msg: any) => {
   const myIp = msg.ip;
   const nextMsg = msg.allMessages[msg.msgIndex - 1];
   var sameUser = false;
-  if (nextMsg?.ip && myIp == nextMsg.ip) {
+  if (nextMsg && msg.data.ip == nextMsg?.ip) {
     sameUser = true;
   }
 
@@ -22,12 +22,12 @@ export const Message = (msg: any) => {
 
   function UserMsgComp() {
     return (
-      <div className={`flex  ${sameUser && "mt-6 md:mt-3"} items-center`}>
+      <div className={`flex  ${sameUser === false && "md:mt-3"} items-center`}>
         <Avatar
-          icon={<IconSpy />}
-          size="sm"
+          icon={<AvatarIcon />}
+          size="md"
           classNames={{
-            base: `${sameUser ? "" : "invisible"} bg-gradient-to-br from-[#1069C8] to-[#A93EDC]`,
+            base: `${sameUser && "invisible"} bg-gradient-to-br from-[#1069C8] to-[#A93EDC]`,
             icon: "text-black/80",
           }}
         />
@@ -36,10 +36,10 @@ export const Message = (msg: any) => {
           style={{ maxWidth: "70%" }}
           className="block ml-2 rounded-lg text-white"
         >
-          {sameUser && (
-            <p className="font-light text-sm">{msg.data.ip_names?.name}</p>
+          {sameUser == false && (
+            <p className="ml-1 font-light text-sm">{msg.data.ip_names?.name}</p>
           )}
-          <div style={{ marginTop: "10px" }}>
+          <div style={{ marginTop: "5px" }}>
             <Code
               size="sm"
               className="max-w-[100%]"
@@ -78,7 +78,7 @@ export const Message = (msg: any) => {
             </p>
           )}
 
-          <div style={{ marginTop: "10px" }}>
+          <div style={{ marginTop: "5px" }}>
             <Code
               size="sm"
               className="max-w-[100%]"

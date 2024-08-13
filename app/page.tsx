@@ -16,7 +16,7 @@ import {
 import { IconSend2 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 
-import { getAllMessages, sendMessage } from "@/utils/supabase/action";
+import { getAllMessages, getIpNameRequest, sendMessage } from "@/utils/supabase/action";
 import { Message } from "@/components/message";
 import { supabase } from "@/utils/supabase/server";
 import LoadingSkeleton from "@/components/loadingSkeleton";
@@ -52,7 +52,7 @@ export default function Home() {
     const oldMsg = payload.old;
     const event = payload.eventType;
     if (event === "INSERT") {
-      newMsg.ip_names = { name: ipValues.name };
+      newMsg.ip_names = await getIpNameRequest(newMsg.ip);
       setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
     } else if (event === "UPDATE") {
       setMsgs((prevMsg: any) => {
