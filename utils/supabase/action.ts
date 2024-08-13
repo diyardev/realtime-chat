@@ -5,8 +5,6 @@ import { redirect } from "next/navigation";
 import { supabase } from "./server";
 
 export async function login(formData: FormData) {
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const data = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
@@ -41,26 +39,41 @@ export async function signup(formData: FormData) {
 }
 
 export async function getAllMessages() {
-  const { data, error } = await supabase.from("messages").select();
-
+  const { data, error } = await supabase
+    .from("messages")
+    .select(`
+      * ,
+      ip_names ( id, name )
+    `)
+    .order("id", { ascending: true })
+    .limit(100);
   if (error) {
+    console.log(error)
     return error;
   }
 
   return data;
 }
 
-export async function sendMessage(message: string) {
+export async function sendMessage(message: string, ip?: string, name?: string) {
   const _data = {
     content: message,
-    ip: "dadsd" as string,
+    ip: ip,
   };
 
-  const { error } = await supabase.from("messages").insert(_data);
+  var { error } = await supabase
+    .from("ip_names")
+    .insert({ name: name, ip: ip });
+  var { error } = await supabase.from("messages").insert(_data);
+  if (error) return error;
+  return _data;
+}
 
+export async function getIpNameRequest(ip: any) {
+  const { data, error } = await supabase.from("ip_names").select().eq("ip", ip);
   if (error) {
     return error;
   }
-
-  return _data;
+  return data[0];
 }
+
