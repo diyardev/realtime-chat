@@ -22,7 +22,7 @@ export const Message = (msg: any) => {
 
   function UserMsgComp() {
     return (
-      <div className={`flex  ${sameUser && "mt-3"} items-center`}>
+      <div className={`flex  ${sameUser && "mt-6 md:mt-3"} items-center`}>
         <Avatar
           icon={<IconSpy />}
           size="sm"
@@ -32,7 +32,7 @@ export const Message = (msg: any) => {
           }}
         />
 
-        <div className="block ml-2 max-w-80 rounded-lg text-white">
+        <div style={{ maxWidth : '70%' }} className="block ml-2 rounded-lg text-white">
         {sameUser && (
           <p className="font-light text-sm">{msg.data.ip_names?.name}</p>
           )}
@@ -54,7 +54,7 @@ export const Message = (msg: any) => {
     return (
       <div
         style={{ width: "100%" }}
-        className={`flex flex-row-reverse ${!sameUser && "mt-3"} items-center`}
+        className={`flex flex-row-reverse ${!sameUser && "mt-6 md:mt-3"} items-center`}
       >
         <Avatar
           icon={<AvatarIcon />}
@@ -65,14 +65,14 @@ export const Message = (msg: any) => {
           }}
         />
 
-        <div className="block mr-2 max-w-80 rounded-lg text-white">
+        <div style={{ maxWidth : '70%' }} className="block mr-2 rounded-lg text-white">
           {sameUser == false && (
-            <p className="text-right mt-[-15px] font-light text-sm">
+            <p className="text-right  font-light text-sm">
               {msg.data.ip_names?.name}
             </p>
           )}
 
-          <div className="my-3">
+          <div className="my-1">
             <Code
               size="sm"
               className="max-w-[100%]"
