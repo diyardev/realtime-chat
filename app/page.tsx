@@ -96,7 +96,7 @@ export default function Home() {
         msg: "Mesaj içeriği boş girilemez.",
       });
     }
-    sendMessage(msg, ipValues.ip);
+    sendMessage(msg, ipValues.ip,ipValues.name);
     setMsg("");
   }
 

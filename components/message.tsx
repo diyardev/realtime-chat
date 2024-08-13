@@ -32,11 +32,14 @@ export const Message = (msg: any) => {
           }}
         />
 
-        <div style={{ maxWidth : '70%' }} className="block ml-2 rounded-lg text-white">
-        {sameUser && (
-          <p className="font-light text-sm">{msg.data.ip_names?.name}</p>
+        <div
+          style={{ maxWidth: "70%" }}
+          className="block ml-2 rounded-lg text-white"
+        >
+          {sameUser && (
+            <p className="font-light text-sm">{msg.data.ip_names?.name}</p>
           )}
-          <div className="">
+          <div style={{ marginTop: "10px" }}>
             <Code
               size="sm"
               className="max-w-[100%]"
@@ -65,14 +68,17 @@ export const Message = (msg: any) => {
           }}
         />
 
-        <div style={{ maxWidth : '70%' }} className="block mr-2 rounded-lg text-white">
+        <div
+          style={{ maxWidth: "70%" }}
+          className="block mr-2 rounded-lg text-white"
+        >
           {sameUser == false && (
             <p className="text-right  font-light text-sm">
               {msg.data.ip_names?.name}
             </p>
           )}
 
-          <div className="my-1">
+          <div style={{ marginTop: "10px" }}>
             <Code
               size="sm"
               className="max-w-[100%]"

@@ -55,35 +55,18 @@ export async function getAllMessages() {
   return data;
 }
 
-export async function sendMessage(message: string, ip?: string) {
-  function getRandomName() {
-    const characters = "abcdefghijklmnopqrstuvwxyz";
-    let name = "";
-    const length = Math.floor(Math.random() * 6) + 3;
+export async function sendMessage(message: string, ip?: string, name?: string) {
 
-    // İlk harfi büyük yapmak için
-    name += characters
-      .charAt(Math.floor(Math.random() * characters.length))
-      .toUpperCase();
-
-    for (let i = 1; i < length; i++) {
-      name += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-
-    return "#" + length + " " + name;
-  }
 
   const _data = {
     content: message,
     ip: ip,
   };
 
-  var { error } = await supabase.from("messages").insert(_data);
-  if (error) return error;
   var { error } = await supabase
     .from("ip_names")
-    .insert({ name: getRandomName(), ip: ip });
+    .insert({ name: name, ip: ip });
+  var { error } = await supabase.from("messages").insert(_data);
   if (error) return error;
-
   return _data;
 }
