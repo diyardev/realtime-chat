@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Avatar, AvatarIcon, Code, Tooltip } from "@nextui-org/react";
+import { IconLetterD } from "@tabler/icons-react";
 
 export const Message = (msg: any) => {
   const myIp = msg.ip;
+
+
 
   const msgDate = new Date(msg.data.created_at).toLocaleTimeString("tr-TR", {
     weekday: "long",
@@ -14,13 +17,11 @@ export const Message = (msg: any) => {
     minute: "2-digit",
   });
 
-  
-
   function UserMsgComp() {
     return (
       <div className="flex my-3 items-center">
         <Avatar
-          icon={<AvatarIcon />}
+          icon={<IconLetterD />}
           size="sm"
           classNames={{
             base: "bg-gradient-to-br from-[#1069C8] to-[#A93EDC]",
@@ -28,6 +29,7 @@ export const Message = (msg: any) => {
           }}
         />
         <div className="block ml-2 max-w-80 rounded-lg text-white">
+        <p className="font-light text-sm">{msg.data.ip_names.name}</p>
           <div className="my-1">
             <Code
               size="sm"
@@ -57,6 +59,7 @@ export const Message = (msg: any) => {
           }}
         />
         <div className="block mr-2 max-w-80 rounded-lg text-white">
+          <p className="text-right font-light text-sm">{msg.data.ip_names.name}</p>
           <div className="my-1">
             <Code
               size="sm"

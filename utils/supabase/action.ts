@@ -41,8 +41,16 @@ export async function signup(formData: FormData) {
 export async function getAllMessages() {
   const { data, error } = await supabase
     .from("messages")
-    .select()
-    .order("id", { ascending: true }).limit(100);
+    .select(
+      `
+      *,
+      ip_names (
+        name
+      )
+    `
+    )
+    .order("id", { ascending: true })
+    .limit(100);
   if (error) {
     return error;
   }
@@ -51,16 +59,34 @@ export async function getAllMessages() {
 }
 
 export async function sendMessage(message: string, ip?: string) {
+  function getRandomName() {
+    const characters = "abcdefghijklmnopqrstuvwxyz";
+    let name = "";
+    const length = Math.floor(Math.random() * 6) + 3;
+
+    // İlk harfi büyük yapmak için
+    name += characters
+      .charAt(Math.floor(Math.random() * characters.length))
+      .toUpperCase();
+
+    for (let i = 1; i < length; i++) {
+      name += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    return "#" + length + " " + name;
+  }
+
   const _data = {
     content: message,
     ip: ip,
   };
 
-  const { error } = await supabase.from("messages").insert(_data);
-
-  if (error) {
-    return error;
-  }
+  var { error } = await supabase.from("messages").insert(_data);
+  if (error) return error;
+  var { error } = await supabase
+    .from("ip_names")
+    .insert({ name: getRandomName(), ip: ip });
+  if (error) return error;
 
   return _data;
 }

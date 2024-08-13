@@ -89,6 +89,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchMsgs() {
       const msgs = await getAllMessages();
+      console.log(msgs)
       setMsgs(msgs);
     }
     fetchMsgs();
