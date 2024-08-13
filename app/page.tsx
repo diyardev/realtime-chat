@@ -31,70 +31,62 @@ export default function Home() {
     msg: "",
   });
 
-  const [ip, setIp] = useState("");
+  const [ipValues, setIpValues] = useState({ ip: "", name: "" });
 
   useEffect(() => {
     fetch("/api/get-ip")
       .then((res) => res.json())
-      .then((data) => setIp(data.ip))
+      .then((data) => setIpValues({ ip: data.ip, name: data.name?.name }))
       .catch((err) => console.error(err));
-  }, []);
 
-  function fetchAllMessages() {
-    const messagesUpdated = async (payload: any) => {
-      const newMsg = payload.new;
-      const oldMsg = payload.old;
-      const event = payload.eventType;
-      if (event === "INSERT") {
-        setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
-      } else if (event === "UPDATE") {
-        setMsgs((prevMsg: any) => {
-          return prevMsg.map((msg: any) =>
-            msg.id === oldMsg.id ? newMsg : msg
-          );
-        });
-      } else if (event === "DELETE") {
-        setMsgs((prevMsg: any[]) =>
-          prevMsg.filter((msg) => msg.id !== oldMsg.id)
-        );
-      }
-
-      setTimeout(() => {
-        const element = document.getElementById("chat-bottom");
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }
-      }, 10);
-    };
-    supabase
-      .channel("messages")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "messages" },
-        messagesUpdated
-      )
-      .subscribe();
-  }
-  const containerRef = useRef(null);
-
-  useEffect(() => {
     setTimeout(() => {
       const element = document.getElementById("chat-bottom");
       if (element) {
         element.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-    }, 800);
+    }, 2500);
   }, []);
+
+  const messagesUpdated = async (payload: any) => {
+    const newMsg = payload.new;
+    const oldMsg = payload.old;
+    const event = payload.eventType;
+    if (event === "INSERT") {
+      newMsg.ip_names = { name: ipValues.name };
+      setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
+    } else if (event === "UPDATE") {
+      setMsgs((prevMsg: any) => {
+        return prevMsg.map((msg: any) => (msg.id === oldMsg.id ? newMsg : msg));
+      });
+    } else if (event === "DELETE") {
+      setMsgs((prevMsg: any[]) =>
+        prevMsg.filter((msg) => msg.id !== oldMsg.id)
+      );
+    }
+
+    setTimeout(() => {
+      const element = document.getElementById("chat-bottom");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }, 10);
+  };
+  supabase
+    .channel("messages")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "messages" },
+      messagesUpdated
+    )
+    .subscribe();
 
   useEffect(() => {
     async function fetchMsgs() {
       const msgs = await getAllMessages();
-      console.log(msgs)
       setMsgs(msgs);
     }
     fetchMsgs();
-    fetchAllMessages();
-    setTimeout(() => setLoading(false), 400);
+    setTimeout(() => setLoading(false), 2000);
   }, [refreshMessages]);
 
   function sendMsg(msg: string) {
@@ -104,8 +96,7 @@ export default function Home() {
         msg: "Mesaj içeriği boş girilemez.",
       });
     }
-    sendMessage(msg, ip);
-    // setMsgs([...msgs, { content: msg }]);
+    sendMessage(msg, ipValues.ip);
     setMsg("");
   }
 
@@ -139,8 +130,16 @@ export default function Home() {
               {loading ? (
                 <LoadingSkeleton />
               ) : (
-                msgs?.map((e: any, i: number) => {
-                  return <Message ip={ip} key={i} data={e} />;
+                msgs?.map((e: any, i: any) => {
+                  return (
+                    <Message
+                      msgIndex={i}
+                      allMessages={msgs}
+                      ip={ipValues.ip}
+                      key={i}
+                      data={e}
+                    />
+                  );
                 })
               )}
 

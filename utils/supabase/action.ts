@@ -41,17 +41,14 @@ export async function signup(formData: FormData) {
 export async function getAllMessages() {
   const { data, error } = await supabase
     .from("messages")
-    .select(
-      `
-      *,
-      ip_names (
-        name
-      )
-    `
-    )
+    .select(`
+      * ,
+      ip_names ( id, name )
+    `)
     .order("id", { ascending: true })
     .limit(100);
   if (error) {
+    console.log(error)
     return error;
   }
 
