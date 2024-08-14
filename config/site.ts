@@ -2,7 +2,7 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
   name: "@diyardev | realtime-chat",
-  description: "Make beautiful websites regardless of your design experience.",
+  description: "This is a real-time chat application.",
   navItems: [
     {
       label: "Home",

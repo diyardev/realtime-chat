@@ -69,7 +69,7 @@ export const Footer = () => {
             spaceBetween={50}
             grabCursor={true}
             autoplay={{
-              delay: 2500,
+              delay: 5000,
               disableOnInteraction: false,
             }}
             modules={[Autoplay]}
