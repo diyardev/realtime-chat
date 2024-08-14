@@ -55,9 +55,11 @@ export async function getAllMessages() {
   return data;
 }
 
-export async function sendMessage(message: string, ip?: string, name?: string) {
+export async function sendMessage(message: string, ip?: string, name?: string, reply?: any) {
   const _data = {
     content: message,
+    reply_id: reply.id,
+    reply_msg : reply.msg,
     ip: ip,
   };
 
