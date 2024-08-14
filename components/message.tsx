@@ -51,7 +51,7 @@ export const Message = (msg: any) => {
             <p className="ml-1 font-light text-sm">{msg.data.ip_names?.name}</p>
           )}
           <div style={{ marginTop: "5px" }}>
-            <motion.div className="example-container">
+            <motion.div>
               <motion.div
                 onDragEnd={(event, info) => {
                   if (info.point.x > 350 && info.point.x <= 2000)
@@ -68,7 +68,7 @@ export const Message = (msg: any) => {
                   <Code
                     size="sm"
                     className="max-w-[100%]"
-                    style={{ whiteSpace: "normal", float: "right" }}
+                    style={{ whiteSpace: "normal" }}
                   >
                     <div className="grid grid-cols-1 gap-2">
                       {msg.data.reply_id > 0 && (
@@ -125,7 +125,7 @@ export const Message = (msg: any) => {
           )}
 
           <div style={{ marginTop: "5px", touchAction: "none" }}>
-            <motion.div className="example-container">
+            <motion.div>
               <motion.div
                 onDragEnd={(event, info) => {
                   if (info.point.x > 0 && info.point.x <= 700)
@@ -154,7 +154,7 @@ export const Message = (msg: any) => {
                             style={{
                               whiteSpace: "normal",
                               float: "right",
-                               boxShadow: "0px 0px 2px 0px #0000008f",
+                              boxShadow: "0px 0px 2px 0px #0000008f",
                             }}
                           >
                             {msg.data.reply_msg}
