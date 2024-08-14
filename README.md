@@ -1,4 +1,4 @@
-# Next.js & NextUI Template
+# Next.js & Supabase Real Time Chat
 
 This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
 
@@ -13,6 +13,7 @@ This is a template for creating applications using Next.js 14 (app directory) an
 - [TypeScript](https://www.typescriptlang.org/)
 - [Framer Motion](https://www.framer.com/motion/)
 - [next-themes](https://github.com/pacocoursey/next-themes)
+- [Supabase](https://supabase.com/)
 
 ## How to Use
 
