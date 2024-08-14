@@ -1,15 +1,24 @@
-import { useState } from "react";
-import { Button } from "@nextui-org/button";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarIcon, Code, Tooltip } from "@nextui-org/react";
-import { IconLetterD, IconSpy } from "@tabler/icons-react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
 export const Message = (msg: any) => {
+  const x = useMotionValue(0);
   const myIp = msg.ip;
   const nextMsg = msg.allMessages[msg.msgIndex - 1];
   var sameUser = false;
   if (nextMsg && msg.data.ip == nextMsg?.ip) {
     sameUser = true;
   }
+  const [replyMsg, setReplyMsg] = useState({
+    id: 0,
+    msg: "",
+  });
+  const [draggedMsg, setDraggedMsg] = useState(0);
+
+  useEffect(() => {
+    msg.onReplyIDChange(replyMsg);
+  }, [draggedMsg, replyMsg]);
 
   const msgDate = new Date(msg.data.created_at).toLocaleTimeString("tr-TR", {
     weekday: "long",
@@ -22,7 +31,9 @@ export const Message = (msg: any) => {
 
   function UserMsgComp() {
     return (
-      <div className={`flex  ${sameUser === false && "md:mt-3"} items-center`}>
+      <div
+        className={`flex  ${sameUser === false && "mt-6 md:mt-3"} items-center`}
+      >
         <Avatar
           icon={<AvatarIcon />}
           size="md"
@@ -40,13 +51,48 @@ export const Message = (msg: any) => {
             <p className="ml-1 font-light text-sm">{msg.data.ip_names?.name}</p>
           )}
           <div style={{ marginTop: "5px" }}>
-            <Code
-              size="sm"
-              className="max-w-[100%]"
-              style={{ whiteSpace: "normal" }}
-            >
-              <Tooltip content={msgDate}>{msg.data.content}</Tooltip>
-            </Code>
+            <motion.div className="example-container">
+              <motion.div
+                onDragEnd={(event, info) => {
+                  if (info.point.x > 350 && info.point.x <= 2000)
+                    setDraggedMsg(info.point.x);
+                  setReplyMsg({ id: msg.data.id, msg: msg.data.content });
+                }}
+                className="box"
+                style={{ x }}
+                drag="x"
+                dragElastic={{ right: 0.5, left: 0 }}
+                dragConstraints={{ right: 0, left: 0 }}
+              >
+                <Tooltip content={msgDate}>
+                  <Code
+                    size="sm"
+                    className="max-w-[100%]"
+                    style={{ whiteSpace: "normal", float: "right" }}
+                  >
+                    <div className="grid grid-cols-1 gap-2">
+                      {msg.data.reply_id > 0 && (
+                        <div>
+                          <Code
+                            color="default"
+                            size="sm"
+                            className="mt-1 max-w-[100%]"
+                            style={{
+                              whiteSpace: "normal",
+                              boxShadow: "0px 0px 2px 0px #0000008f",
+                            }}
+                          >
+                            {msg.data.reply_msg}
+                          </Code>
+                        </div>
+                      )}
+
+                      <div> {msg.data.content}</div>
+                    </div>
+                  </Code>
+                </Tooltip>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -78,14 +124,50 @@ export const Message = (msg: any) => {
             </p>
           )}
 
-          <div style={{ marginTop: "5px" }}>
-            <Code
-              size="sm"
-              className="max-w-[100%]"
-              style={{ whiteSpace: "normal", float: "right" }}
-            >
-              <Tooltip content={msgDate}>{msg.data.content}</Tooltip>
-            </Code>
+          <div style={{ marginTop: "5px", touchAction: "none" }}>
+            <motion.div className="example-container">
+              <motion.div
+                onDragEnd={(event, info) => {
+                  if (info.point.x > 0 && info.point.x <= 700)
+                    setDraggedMsg(info.point.x);
+                  setReplyMsg({ id: msg.data.id, msg: msg.data.content });
+                }}
+                className="box"
+                style={{ x }}
+                drag="x"
+                dragElastic={{ right: 0, left: 0.5 }}
+                dragConstraints={{ right: 0, left: 0 }}
+              >
+                <Tooltip content={msgDate}>
+                  <Code
+                    size="sm"
+                    className="max-w-[100%] text-right"
+                    style={{ whiteSpace: "normal", float: "right" }}
+                  >
+                    <div className="grid grid-cols-1 gap-2">
+                      {msg.data.reply_id > 0 && (
+                        <div>
+                          <Code
+                            color="default"
+                            size="sm"
+                            className="mt-1 max-w-[100%]"
+                            style={{
+                              whiteSpace: "normal",
+                              float: "right",
+                               boxShadow: "0px 0px 2px 0px #0000008f",
+                            }}
+                          >
+                            {msg.data.reply_msg}
+                          </Code>
+                        </div>
+                      )}
+
+                      <div> {msg.data.content}</div>
+                    </div>
+                  </Code>
+                </Tooltip>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
