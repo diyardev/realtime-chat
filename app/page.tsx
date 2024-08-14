@@ -11,19 +11,22 @@ import {
   Input,
   Button,
   ScrollShadow,
-  Skeleton,
 } from "@nextui-org/react";
 import { IconSend2 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect,  useState } from "react";
 
-import { getAllMessages, getIpNameRequest, sendMessage } from "@/utils/supabase/action";
+import {
+  getAllMessages,
+  getIpNameRequest,
+  sendMessage,
+} from "@/utils/supabase/action";
 import { Message } from "@/components/message";
 import { supabase } from "@/utils/supabase/server";
+import { kufurler } from "@/utils/kufurler";
 import LoadingSkeleton from "@/components/loadingSkeleton";
 
 export default function Home() {
   const [msgs, setMsgs] = useState<any>([]);
-  const [refreshMessages, setRefreshMessages] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
   const [msg, setMsg] = useState<any>("");
   const [inputError, setInputError] = useState<any>({
@@ -53,6 +56,10 @@ export default function Home() {
     const event = payload.eventType;
     if (event === "INSERT") {
       newMsg.ip_names = await getIpNameRequest(newMsg.ip);
+      if (newMsg.ip_names.ip !== ipValues.ip) {
+        const audio = new Audio("/msg-send.mp3");
+        audio.play();
+      }
       setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
     } else if (event === "UPDATE") {
       setMsgs((prevMsg: any) => {
@@ -63,15 +70,9 @@ export default function Home() {
         prevMsg.filter((msg) => msg.id !== oldMsg.id)
       );
     }
-
-    setTimeout(() => {
-      const element = document.getElementById("chat-bottom");
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }
-    }, 10);
   };
-  supabase
+
+    supabase
     .channel("messages")
     .on(
       "postgres_changes",
@@ -87,7 +88,7 @@ export default function Home() {
     }
     fetchMsgs();
     setTimeout(() => setLoading(false), 2000);
-  }, [refreshMessages]);
+  }, []);
 
   function sendMsg(msg: string) {
     if (msg == "" || msg == null) {
@@ -96,12 +97,25 @@ export default function Home() {
         msg: "Mesaj içeriği boş girilemez.",
       });
     }
-    sendMessage(msg, ipValues.ip,ipValues.name);
+    if (
+      kufurler.some((Word) => ` ${msg.toLowerCase()} `.includes(` ${Word} `))
+    ) {
+      return setInputError({
+        invalid: true,
+        msg: "Küfür yasak..",
+      });
+    }
+
+    const audio = new Audio("/msg-send.mp3");
+    audio.play();
+
+    sendMessage(msg, ipValues.ip, ipValues.name);
     setMsg("");
   }
 
   return (
     <section className="flex justify-center">
+      <audio src="/msg-send.mp3" id="msgTone"></audio>
       <Card className="lg:w-[50%]">
         <CardHeader className="flex gap-3">
           <Image

@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { Button } from "@nextui-org/button";
 import { Avatar, AvatarIcon, Code, Tooltip } from "@nextui-org/react";
-import { IconLetterD, IconSpy } from "@tabler/icons-react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
 export const Message = (msg: any) => {
+  const x = useMotionValue(0);
   const myIp = msg.ip;
   const nextMsg = msg.allMessages[msg.msgIndex - 1];
   var sameUser = false;
   if (nextMsg && msg.data.ip == nextMsg?.ip) {
     sameUser = true;
   }
+  const [replyID, setReplyID] = useState(0);
 
   const msgDate = new Date(msg.data.created_at).toLocaleTimeString("tr-TR", {
     weekday: "long",
@@ -22,7 +23,9 @@ export const Message = (msg: any) => {
 
   function UserMsgComp() {
     return (
-      <div className={`flex  ${sameUser === false && "md:mt-3"} items-center`}>
+      <div
+        className={`flex  ${sameUser === false && "mt-6 md:mt-3"} items-center`}
+      >
         <Avatar
           icon={<AvatarIcon />}
           size="md"
@@ -40,13 +43,27 @@ export const Message = (msg: any) => {
             <p className="ml-1 font-light text-sm">{msg.data.ip_names?.name}</p>
           )}
           <div style={{ marginTop: "5px" }}>
-            <Code
-              size="sm"
-              className="max-w-[100%]"
-              style={{ whiteSpace: "normal" }}
-            >
-              <Tooltip content={msgDate}>{msg.data.content}</Tooltip>
-            </Code>
+            <motion.div className="example-container">
+              <motion.div
+                onDragEnd={(event, info) => {
+                  if (info.point.x > 0 && info.point.x <= 750)
+                    setReplyID(msg.data.id);
+                }}
+                className="box"
+                style={{ x }}
+                drag="x"
+                dragElastic={{ right: 0.5, left: 0 }}
+                dragConstraints={{ right: 0, left: 0 }}
+              >
+                <Code
+                  size="sm"
+                  className="max-w-[100%]"
+                  style={{ whiteSpace: "normal" }}
+                >
+                  <Tooltip content={msgDate}>{msg.data.content}</Tooltip>
+                </Code>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -78,14 +95,27 @@ export const Message = (msg: any) => {
             </p>
           )}
 
-          <div style={{ marginTop: "5px" }}>
-            <Code
-              size="sm"
-              className="max-w-[100%]"
-              style={{ whiteSpace: "normal", float: "right" }}
-            >
-              <Tooltip content={msgDate}>{msg.data.content}</Tooltip>
-            </Code>
+          <div style={{ marginTop: "5px", touchAction: "none" }}>
+            <motion.div className="example-container">
+              <motion.div
+                onDragEnd={(event, info) =>
+                  console.log(info.point.x, info.point.y)
+                }
+                className="box"
+                style={{ x }}
+                drag="x"
+                dragElastic={{ right: 0, left: 0.5 }}
+                dragConstraints={{ right: 0, left: 0 }}
+              >
+                <Code
+                  size="sm"
+                  className="max-w-[100%]"
+                  style={{ whiteSpace: "normal", float: "right" }}
+                >
+                  <Tooltip content={msgDate}>{msg.data.content}</Tooltip>
+                </Code>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
