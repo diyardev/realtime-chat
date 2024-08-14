@@ -10,10 +10,13 @@ import {
   Image,
 } from "@nextui-org/react";
 import {
+  IconBrandFramerMotion,
   IconBrandNextjs,
   IconBrandReact,
   IconBrandSupabase,
   IconBrandTypescript,
+  IconLetterS,
+  IconSwipeRight,
 } from "@tabler/icons-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -115,7 +118,20 @@ export const Footer = () => {
                   <IconBrandSupabase />
                 </CardFooter>
               </Card>
+              <Card isFooterBlurred radius="lg" className="border-none">
+                <Image
+                  alt="React JS"
+                  className="object-cover"
+                  height={150}
+                  src="https://www.rentallscript.com/resources/content/images/2021/09/React--1-.gif"
+                  width={150}
+                />
+                <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+                  <p className="text-tiny text-white/80">Reactjs</p>
 
+                  <IconBrandReact />
+                </CardFooter>
+              </Card>
               <Card isFooterBlurred radius="lg" className="border-none">
                 <Image
                   alt="NextJS Framework"
@@ -146,18 +162,34 @@ export const Footer = () => {
               </Card>
               <Card isFooterBlurred radius="lg" className="border-none">
                 <Image
-                  alt="React JS"
+                  alt="Framer Motion"
                   className="object-cover"
                   height={150}
-                  src="https://www.rentallscript.com/resources/content/images/2021/09/React--1-.gif"
+                  src="https://media.dev.to/cdn-cgi/image/width=1600,height=900,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Frjdzd6dl83cdqxmvqpvr.png"
                   width={150}
                 />
                 <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-                  <p className="text-tiny text-white/80">Reactjs</p>
+                  <p className="text-tiny text-white/80">Framer Motion</p>
 
-                  <IconBrandReact />
+                  <IconBrandFramerMotion />
                 </CardFooter>
               </Card>
+             
+              <Card isFooterBlurred radius="lg" className="border-none">
+                <Image
+                  alt="Swiper Slider"
+                  className="object-cover"
+                  height={150}
+                  src="https://cdn.cangokceaslan.com/swiper_cae5da2dda.png"
+                  width={150}
+                />
+                <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+                  <p className="text-tiny text-white/80">Swiper Slider</p>
+
+                  <IconLetterS fontWeight='light' />
+                </CardFooter>
+              </Card>
+
               <Card isFooterBlurred radius="lg" className="border-none">
                 <Image
                   alt="Typescript"
