@@ -79,7 +79,7 @@ export const Message = (msg: any) => {
                             className="mt-1 max-w-[100%]"
                             style={{
                               whiteSpace: "normal",
-                              boxShadow: "0 0px 2px 0px",
+                              boxShadow: "0px 0px 2px 0px #0000008f",
                             }}
                           >
                             {msg.data.reply_msg}
@@ -154,7 +154,7 @@ export const Message = (msg: any) => {
                             style={{
                               whiteSpace: "normal",
                               float: "right",
-                              boxShadow: "0 0px 2px 0px",
+                               boxShadow: "0px 0px 2px 0px #0000008f",
                             }}
                           >
                             {msg.data.reply_msg}

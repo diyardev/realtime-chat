@@ -70,8 +70,10 @@ export default function Home() {
       const event = payload.eventType;
       newMsg.ip_names = await getIpNameRequest(newMsg.ip);
       if (event === "INSERT") {
-        const audio = new Audio("/msg-arrived.mp3");
-        audio.play();
+        if (newMsg.ip_names.ip !== ipValues.ip) {
+          const audio = new Audio("/msg-arrived.mp3");
+          audio.play();
+        }
         setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
       } else if (event === "UPDATE") {
         setMsgs((prevMsg: any) => {
@@ -127,7 +129,6 @@ export default function Home() {
 
   return (
     <section className="flex justify-center">
-      <audio src="/msg-send.mp3" id="msgTone"></audio>
       <Card className="lg:w-[50%]">
         <CardHeader className="flex gap-3">
           <Image
