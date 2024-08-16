@@ -70,9 +70,9 @@ export default function Home() {
       const event = payload.eventType;
       newMsg.ip_names = await getIpNameRequest(newMsg.ip);
       if (event === "INSERT") {
-        if (newMsg.ip_names.ip !== ipValues.ip) {
-          const audio = new Audio("/msg-arrived.mp3");
-          audio.play();
+        if (newMsg.ip_names.ip != ipValues.ip) {
+          const msgArrived = new Audio("/msg-arrived.mp3");
+          msgArrived.play();
         }
         setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
       } else if (event === "UPDATE") {
