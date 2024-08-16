@@ -41,7 +41,6 @@ export default function Home() {
     msg: "",
   });
 
-
   useEffect(() => {
     fetch("/api/get-ip")
       .then((res) => res.json())
@@ -105,6 +104,8 @@ export default function Home() {
   }, []);
 
   function sendMsg(msg: string) {
+    msg = msg.trim();
+
     if (msg == "" || msg == null) {
       return setInputError({
         invalid: true,
@@ -123,7 +124,7 @@ export default function Home() {
     const audio = new Audio("/msg-send.mp3");
     audio.play();
 
-    sendMessage(msg, ipValues.ip, ipValues.name,replyMsg);
+    sendMessage(msg, ipValues.ip, ipValues.name, replyMsg);
     setMsg("");
   }
 
