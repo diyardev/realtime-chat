@@ -29,6 +29,7 @@ import LoadingSkeleton from "@/components/loadingSkeleton";
 export default function Home() {
   const [msgs, setMsgs] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingSendBtn, setLoadingSendBtn] = useState<boolean>(false);
   const [msg, setMsg] = useState<any>("");
   const [inputError, setInputError] = useState<any>({
     invalid: false,
@@ -40,7 +41,6 @@ export default function Home() {
     id: 0,
     msg: "",
   });
-
 
   useEffect(() => {
     fetch("/api/get-ip")
@@ -70,9 +70,9 @@ export default function Home() {
       const event = payload.eventType;
       newMsg.ip_names = await getIpNameRequest(newMsg.ip);
       if (event === "INSERT") {
-        if (newMsg.ip_names.ip !== ipValues.ip) {
-          const audio = new Audio("/msg-arrived.mp3");
-          audio.play();
+        if (newMsg.ip_names.ip != ipValues.ip) {
+          const msgArrived = new Audio("/msg-arrived.mp3");
+          msgArrived.play();
         }
         setMsgs((prevMsg: any) => [...prevMsg, newMsg]);
       } else if (event === "UPDATE") {
@@ -102,29 +102,53 @@ export default function Home() {
         messagesUpdated
       )
       .subscribe();
-  }, []);
+  }, [ipValues.ip]);
 
-  function sendMsg(msg: string) {
+  async function sendMsg(msg: string) {
+    msg = msg.trim();
+
     if (msg == "" || msg == null) {
+      await setLoadingSendBtn(false);
       return setInputError({
         invalid: true,
         msg: "Mesaj içeriği boş girilemez.",
       });
+    } else if (msg.length > 100) {
+      await setLoadingSendBtn(false);
+      return setInputError({
+        invalid: true,
+        msg: "Mesaj içeriği 100 karekterden daha fazla olamaz.",
+      });
     }
+
     if (
       kufurler.some((Word) => ` ${msg.toLowerCase()} `.includes(` ${Word} `))
     ) {
+      await setLoadingSendBtn(false);
       return setInputError({
         invalid: true,
         msg: "Küfür yasak..",
+      });
+    }
+    const lastMsg = msgs.at(-1);
+    if (lastMsg?.content === msg && lastMsg?.ip == ipValues.ip) {
+      await setLoadingSendBtn(false);
+      return setInputError({
+        invalid: true,
+        msg: "Flood yasak ;(",
       });
     }
 
     const audio = new Audio("/msg-send.mp3");
     audio.play();
 
-    sendMessage(msg, ipValues.ip, ipValues.name,replyMsg);
-    setMsg("");
+    await sendMessage(msg, ipValues.ip, ipValues.name, replyMsg);
+    await setMsg("");
+    await setInputError({
+      invalid: false,
+      msg: "",
+    });
+    await setLoadingSendBtn(false);
   }
 
   return (
@@ -200,6 +224,7 @@ export default function Home() {
               <Input
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
+                    setLoadingSendBtn(true);
                     sendMsg(msg);
                   }
                 }}
@@ -222,7 +247,9 @@ export default function Home() {
                 }}
                 endContent={
                   <Button
+                    isLoading={loadingSendBtn}
                     onClick={() => {
+                      setLoadingSendBtn(true);
                       sendMsg(msg);
                     }}
                     variant="flat"
