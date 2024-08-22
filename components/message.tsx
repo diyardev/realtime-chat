@@ -18,7 +18,7 @@ export const Message = (msg: any) => {
 
   useEffect(() => {
     msg.onReplyIDChange(replyMsg);
-  }, [draggedMsg, replyMsg]);
+  }, [draggedMsg, replyMsg, msg]);
 
   const msgDate = new Date(msg.data.created_at).toLocaleTimeString("tr-TR", {
     weekday: "long",
