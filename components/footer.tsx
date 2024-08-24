@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import { Button } from "@nextui-org/button";
 import {
@@ -8,6 +8,12 @@ import {
   CardFooter,
   CardHeader,
   Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
 } from "@nextui-org/react";
 import {
   IconBrandFramerMotion,
@@ -46,27 +52,33 @@ const list = [
 ];
 
 export const Footer = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [modalImg, setModalImg] = useState();
+  const [modalTitle, setModalTitle] = useState();
+
+  function modalHandleOpen(title: any, img: any) {
+    setModalImg(img);
+    setModalTitle(title);
+    onOpen();
+  }
   return (
     <footer className="w-full mb-5  py-10">
       <div className="container px-10 mx-auto">
-      <h4 className="text-md text-center font-light mb-5">features</h4>
+        <h4 className="text-md text-center font-light mb-5">features</h4>
         <section className="mb-20 ">
           <Swiper
             breakpoints={{
               640: {
                 slidesPerView: 2,
-                spaceBetween: 20,
               },
               768: {
-                slidesPerView: 2,
-                spaceBetween: 40,
+                slidesPerView: 3,
               },
               1024: {
-                slidesPerView: 3,
-                spaceBetween: 50,
+                slidesPerView: 5,
               },
             }}
-            spaceBetween={50}
+            spaceBetween={15}
             grabCursor={true}
             autoplay={{
               delay: 5000,
@@ -77,24 +89,52 @@ export const Footer = () => {
           >
             {list.map((item, index) => (
               <SwiperSlide key={index}>
-                <Card shadow="sm">
-                  <CardBody className="overflow-visible p-0">
+                <Card className="py-4">
+                  <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                    <p className="text-tiny uppercase font-bold">
+                      {item.title}
+                    </p>
+                  </CardHeader>
+                  <CardBody className="overflow-visible py-2">
                     <Image
-                      shadow="sm"
-                      radius="lg"
-                      width="100%"
+                      onClick={() => {
+                        modalHandleOpen(item.title, item.img);
+                      }}
                       alt={item.title}
-                      className="w-full object-cover "
+                      className="hover:cursor-pointer object-cover rounded-xl"
                       src={item.img}
+                      width={270}
                     />
                   </CardBody>
-                  <CardFooter className="text-small justify-between">
-                    <b>{item.title}</b>
-                  </CardFooter>
                 </Card>
               </SwiperSlide>
             ))}
           </Swiper>
+
+          <Modal size="xl" backdrop="blur" isOpen={isOpen} onClose={onClose}>
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">
+                    {modalTitle}
+                  </ModalHeader>
+                  <ModalBody>
+                    <Image
+                      alt={modalTitle}
+                      className="object-cover rounded-xl"
+                      src={modalImg}
+                      width={800}
+                    />
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="danger" variant="light" onPress={onClose}>
+                      Kapat
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
         </section>
       </div>
       <div className="flex items-center justify-center">
@@ -174,7 +214,7 @@ export const Footer = () => {
                   <IconBrandFramerMotion />
                 </CardFooter>
               </Card>
-             
+
               <Card isFooterBlurred radius="lg" className="border-none">
                 <Image
                   alt="Swiper Slider"
@@ -186,7 +226,7 @@ export const Footer = () => {
                 <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
                   <p className="text-tiny text-white/80">Swiper Slider</p>
 
-                  <IconLetterS fontWeight='light' />
+                  <IconLetterS fontWeight="light" />
                 </CardFooter>
               </Card>
 
